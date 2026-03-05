@@ -1,0 +1,85 @@
+﻿@using aula14.Models;
+@model IEnumerable<Produto>;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Estoque de Produtos</h1>
+
+    <form asp-controller="Home" asp-action="Criar" method="post">
+
+        <div class="card mt-5 p-2 mb-5 text-start">
+            <label class="form-label mt-4">Nome do Produto</label>
+            <input class="form-control" name="nome" placeholder="Nome do produto" required>
+
+            <label class="form-label mt-4">Quantidade</label>
+            <input class="form-control" name="quantidade" type="number" placeholder="Quantidade" required>
+
+            <label class="form-label mt-4">Prioridade</label>
+            <select class="form-select" name="prioridade">
+                <option value="Baixa">Baixa</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+            </select>
+
+            <button class="btn btn-success mt-4 w-100">Adicionar</button>
+        </div>
+    </form>
+
+    <h1 class="display-4">Lista de Produtos</h1>
+    <hr />
+    @* <table class="table">
+        <thead>
+            <tr>
+                <th>Nº</th>
+                <th>Status</th>
+                <th>Prioridade</th>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody> *@
+
+    <div class="row">
+
+        @foreach (var produto in Model)
+        {
+            string cor = "";
+            if (produto.NivelPrioridade == aula14.Models.Prioridade.Alta)
+                cor = "border-danger border-3";
+
+            if (produto.NivelPrioridade == aula14.Models.Prioridade.Media)
+                cor = "border-warning border-3";
+
+            if (produto.NivelPrioridade == aula14.Models.Prioridade.Baixa)
+                cor = "border-success border-3";
+
+            <div class="col-md-4 mb-4">
+                <div class="card @cor">
+                    <div class="card-body">
+                        <h5 class="card-title">@produto.Nome</h5>
+                        <p class="card-text">
+                            Quantidade: <strong>@produto.Quantidade</strong><br>
+                            Prioridade: <strong>@produto.NivelPrioridade</strong>
+                        </p>
+                        @if (produto.Quantidade <= 10)
+                        {
+                            <p class="text-warning">⚠️ Estoque baixo</p>
+                        }
+                        else
+                        {
+                            <p class="text-success">✅ Estoque suficiente</p>
+                        }
+                        <hr>
+                        <a class="btn btn-outline-danger btn-sm" href="/Home/Excluir?id=@produto.Id"
+                               onclick="return confirm('Tem certeza de que deseja excluir essa tarefa?')">
+                            Excluir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
